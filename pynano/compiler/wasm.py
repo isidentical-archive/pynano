@@ -8,7 +8,7 @@ from pynano.compiler import Compiler
 from pynano.interfaces import parse
 
 WASM_TYPES = {"integer": "i32", "float": "f32"}
-Parameter = Union[str, "Instruction"]
+Parameter = Union[str, "Definition", "Instruction"]
 
 
 @dataclass
@@ -24,7 +24,7 @@ class Instruction:
     name: str
     parameters: List[Parameter]
 
-    def __init__(self, name: str, *parameters) -> None:
+    def __init__(self, name: str, *parameters: Parameter) -> None:
         self.name = name
         self.parameters = list(parameters)
 

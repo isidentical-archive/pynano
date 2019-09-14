@@ -1,5 +1,6 @@
 import ast
 from enum import IntEnum
+from typing import Optional
 
 
 class Precedence(IntEnum):
@@ -10,5 +11,6 @@ class Precedence(IntEnum):
     FINAL = 4
 
 
-def parse(node: ast.Name):
-    return node.id
+def parse(node: Optional[ast.expr]) -> str:  # type: ignore
+    if isinstance(node, ast.Name):
+        return node.id

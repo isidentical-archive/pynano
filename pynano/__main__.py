@@ -1,10 +1,12 @@
 import argparse
 from pathlib import Path
+from typing import Optional
 
+from pynano.compiler import Compiler
 from pynano.pyn import PyNano
 
 
-def main(file, backend=None):
+def main(file: Path, backend: Optional[Compiler] = None) -> None:
     if not file.exists():
         raise FileNotFoundError(f"{file} not found!")
 

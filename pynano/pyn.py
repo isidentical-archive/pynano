@@ -1,7 +1,7 @@
 import ast
 import os
 import tokenize
-from typing import List, Optional, Sequence, Type
+from typing import Any, Dict, List, Optional, Sequence, Type
 
 from pynano.checkers import CHECKERS, SyntaxChecker
 from pynano.compiler import Compiler, WASMCompiler
@@ -14,7 +14,7 @@ class PyNano:
         self.checkers: List[SyntaxChecker] = []
         self._pre_init(checkers or CHECKERS)
 
-    def _pre_init(self, checkers: Checkers, **options) -> None:
+    def _pre_init(self, checkers: Checkers, **options: Dict[str, Any]) -> None:
         for checker in checkers:
             self.checkers.append(checker())
 

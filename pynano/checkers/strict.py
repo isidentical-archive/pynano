@@ -1,3 +1,6 @@
+import ast
+from typing import NoReturn
+
 from pynano.checkers import NanoSyntaxError, SyntaxChecker
 from pynano.interfaces import Precedence
 
@@ -12,12 +15,12 @@ class StrictSubsetChecker(SyntaxChecker):
     ACTIVE = True
     PRECEDENCE = Precedence.INITAL
 
-    def visit_Assign(self, node):
+    def visit_Assign(self, node: ast.Assign) -> NoReturn:
         raise NotAllowedError(
             "Assignment statements without annotation is not allowed.", node
         )
 
-    def visit_FunctionDef(self, node):
+    def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
         # ignore pos and kw only
         arguments = node.args
         if not all(arg.annotation for arg in arguments.args):
