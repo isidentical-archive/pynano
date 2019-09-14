@@ -1,4 +1,5 @@
 from pynano.checkers import NanoSyntaxError, SyntaxChecker
+from pynano.interfaces import Precedence
 
 
 class NotAllowedError(NanoSyntaxError):
@@ -9,6 +10,7 @@ class StrictSubsetChecker(SyntaxChecker):
     """Checks for if tree complies with pynano subset """
 
     ACTIVE = True
+    PRECEDENCE = Precedence.INITAL
 
     def visit_Assign(self, node):
         raise NotAllowedError(

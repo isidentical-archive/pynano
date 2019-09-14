@@ -3,6 +3,7 @@ import ast
 import pytest
 
 from pynano.checkers import CHECKERS, NanoSyntaxError, SyntaxChecker
+from pynano.interfaces import Precedence
 
 
 @pytest.fixture
@@ -38,6 +39,20 @@ def test_checker_subclass():
 
     assert FakeChecker in CHECKERS
     assert FakeInactiveChecker not in CHECKERS
+
+
+def test_checker_subclass_precedence():
+    CHECKERS.clear()
+
+    class FakeCheckerFinal(SyntaxChecker):
+        ACTIVE = True
+        PRECEDENCE = Precedence.FINAL
+
+    class FakeCheckerInital(SyntaxChecker):
+        ACTIVE = True
+        PRECEDENCE = Precedence.INITAL
+
+    assert CHECKERS == [FakeCheckerInital, FakeCheckerFinal]
 
 
 def test_successful_check(fake_checker):
