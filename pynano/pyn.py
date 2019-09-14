@@ -9,7 +9,7 @@ Checkers = Sequence[Type[SyntaxChecker]]
 
 
 class PyNano:
-    def __init__(self, checkers: Optional[Checkers]) -> None:
+    def __init__(self, checkers: Optional[Checkers] = None) -> None:
         self.checkers: List[SyntaxChecker] = []
         self._pre_init(checkers or CHECKERS)
 
@@ -24,3 +24,5 @@ class PyNano:
             content = file.read()
 
         tree = ast.parse(content)
+        for checker in self.checkers:
+            checker.check(tree)

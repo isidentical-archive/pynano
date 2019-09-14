@@ -5,10 +5,13 @@ class NotAllowedError(NanoSyntaxError):
     pass
 
 
-class StrictChecker(SyntaxChecker):
+class StrictSubsetChecker(SyntaxChecker):
     """Checks for if tree complies with pynano subset """
 
+    ACTIVE = True
+
     def visit_Assign(self, node):
+        print(1)
         raise NotAllowedError(
             "Assignment statements without annotation is not allowed.", node
         )
@@ -18,3 +21,4 @@ class StrictChecker(SyntaxChecker):
         arguments = node.args
         if not all(arg.annotation for arg in arguments.args):
             raise NotAllowedError("Arguments without annotations is not allowed.", node)
+        return self.generic_visit(node)
