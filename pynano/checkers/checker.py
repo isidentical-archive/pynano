@@ -1,7 +1,7 @@
 import ast
 from typing import Union
 
-ACTIVE_SIGN = "active"
+ACTIVE_SIGN = "ACTIVE"
 CHECKERS = []
 
 
@@ -17,10 +17,5 @@ class SyntaxChecker(ast.NodeVisitor):
         if getattr(cls, ACTIVE_SIGN, None):
             CHECKERS.append(cls)
 
-    def check(self, tree, strict=False) -> Union[bool, NanoSyntaxError]:
-        try:
-            self.visit(tree)
-        except NanoSyntaxError as exc:
-            return exc
-        else:
-            return True
+    def check(self, tree, *, strict=True) -> bool:
+        return self.visit(tree) or True
