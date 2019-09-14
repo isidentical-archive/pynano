@@ -1,0 +1,11 @@
+language: python
+python:
+  - "3.8-dev"
+  - "nightly"
+install:
+  - pip install -r requirements-dev.txt
+  - python setup.py develop
+script:
+  - py.test  --cov-report term --cov=pynano
+after_success:
+  - codecov
