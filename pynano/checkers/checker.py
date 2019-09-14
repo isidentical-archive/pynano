@@ -28,3 +28,6 @@ class SyntaxChecker(ast.NodeVisitor):
 
     def check(self, tree: ast.AST, *, strict: bool = True) -> bool:
         return self.visit(tree) or True
+
+    def code_check(self, code: str) -> bool:
+        return self.check(ast.parse(code, "<test>", "exec"))

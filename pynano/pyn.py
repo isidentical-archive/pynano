@@ -4,7 +4,7 @@ import tokenize
 from typing import List, Optional, Sequence, Type
 
 from pynano.checkers import CHECKERS, SyntaxChecker
-from pynano.compiler import WASMCompiler
+from pynano.compiler import Compiler, WASMCompiler
 
 Checkers = Sequence[Type[SyntaxChecker]]
 
@@ -18,7 +18,9 @@ class PyNano:
         for checker in checkers:
             self.checkers.append(checker())
 
-    def compile(self, file_path: os.PathLike) -> None:
+    def compile(
+        self, file_path: os.PathLike, backend: Optional[Type[Compiler]] = None
+    ) -> str:
         file_path = os.fspath(file_path)
 
         with tokenize.open(file_path) as file:
@@ -28,6 +30,8 @@ class PyNano:
         for checker in self.checkers:
             checker.check(tree)
 
-        compiler = WASMCompiler()
-        wasm = compiler.compile(tree)
-        return wasm
+        if backend is None:
+            backend = WASMCompiler()
+
+        result = backend.compile(tree)
+        return result
