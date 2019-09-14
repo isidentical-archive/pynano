@@ -9,7 +9,8 @@ def main(file):
         raise FileNotFoundError(f"{args.file} not found!")
 
     pynano = PyNano()
-    pynano.compile(file)
+    result = pynano.compile(file)
+    print(result)
 
 
 if __name__ == "__main__":

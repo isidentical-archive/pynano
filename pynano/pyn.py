@@ -4,6 +4,7 @@ import tokenize
 from typing import List, Optional, Sequence, Type
 
 from pynano.checkers import CHECKERS, SyntaxChecker
+from pynano.compiler import WASMCompiler
 
 Checkers = Sequence[Type[SyntaxChecker]]
 
@@ -26,3 +27,7 @@ class PyNano:
         tree = ast.parse(content)
         for checker in self.checkers:
             checker.check(tree)
+
+        compiler = WASMCompiler()
+        wasm = compiler.compile(tree)
+        return wasm
