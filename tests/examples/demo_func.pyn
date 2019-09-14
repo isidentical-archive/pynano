@@ -1,0 +1,3 @@
+def add(a: integer, b: integer) -> integer:
+    result: integer = a + b
+    return result
