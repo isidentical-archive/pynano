@@ -11,7 +11,6 @@ class StrictSubsetChecker(SyntaxChecker):
     ACTIVE = True
 
     def visit_Assign(self, node):
-        print(1)
         raise NotAllowedError(
             "Assignment statements without annotation is not allowed.", node
         )
