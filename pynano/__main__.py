@@ -6,7 +6,7 @@ from pynano.pyn import PyNano
 
 def main(file, backend=None):
     if not file.exists():
-        raise FileNotFoundError(f"{args.file} not found!")
+        raise FileNotFoundError(f"{file} not found!")
 
     pynano = PyNano()
     result = pynano.compile(file, backend=backend)
