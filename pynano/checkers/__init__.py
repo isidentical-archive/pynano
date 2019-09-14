@@ -1,1 +1,1 @@
-from pynano.checkers.checker import CHECKERS, SyntaxChecker
+from pynano.checkers.checker import CHECKERS, NanoSyntaxError, SyntaxChecker
