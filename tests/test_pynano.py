@@ -5,6 +5,8 @@ import pytest
 from pynano.checkers import SyntaxChecker
 from pynano.pyn import PyNano
 
+BASE_PATH = Path(__file__).parent.resolve()
+
 
 @pytest.fixture
 def pynano():
@@ -21,10 +23,8 @@ def test_pynano_differnet_checkers():
 
 @pytest.mark.parametrize(
     "program",
-    (
-        Path(__file__).resolve() / "examples" / "empty.pyn",
-        Path(__file__).resolve() / "examples" / "demo_func.pyn",
-    ),
+    (BASE_PATH / "examples" / "empty.pyn", BASE_PATH / "examples" / "demo_func.pyn"),
 )
-def pytest_pynano_example(pynano, program):
-    assert pynano.compile(program)
+def test_pynano_example(pynano, program):
+    result = pynano.compile(program)
+    assert result is not None
