@@ -19,7 +19,7 @@ class PyNano:
             self.checkers.append(checker())
 
     def compile(
-        self, file_path: os.PathLike, backend: Optional[Type[Compiler]] = None
+        self, file_path: os.PathLike, *, backend: Optional[Type[Compiler]] = None
     ) -> str:
         file_path = os.fspath(file_path)
 
