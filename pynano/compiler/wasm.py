@@ -7,7 +7,7 @@ from typing import List, Union
 from pynano.compiler import Compiler
 from pynano.interfaces import parse
 
-WASM_TYPES = {"integer": "i32"}
+WASM_TYPES = {"integer": "i32", "float": "f32"}
 Parameter = Union[str, "Instruction"]
 
 

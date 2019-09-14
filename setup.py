@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 setup(
     name="pynano",
@@ -6,5 +6,5 @@ setup(
     packages=find_packages(),
     url="https://github.com/pynano/pynano",
     author="btaskaya",
-    description="PyNano compiler"
+    description="PyNano compiler",
 )
