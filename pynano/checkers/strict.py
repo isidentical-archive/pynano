@@ -21,4 +21,8 @@ class StrictSubsetChecker(SyntaxChecker):
         arguments = node.args
         if not all(arg.annotation for arg in arguments.args):
             raise NotAllowedError("Arguments without annotations is not allowed.", node)
+        if node.returns is None:
+            raise NotAllowedError(
+                "Function definition without return type is not allowed.", node
+            )
         return self.generic_visit(node)
