@@ -37,12 +37,26 @@ def test_instruction_complex():
     instr.parameters.append(Definition("bla"))
     assert str(instr) == "(test bla $bla)"
 
-    subinstr = Instruction("bla")
-    instr.parameters.append(subinstr)
+    tempinstr = Instruction("bla")
+    instr.parameters.append(tempinstr)
     assert str(instr) == "(test bla $bla (bla))"
 
-    instr.parameters.append(subinstr)
+    instr.parameters.append(tempinstr)
     assert str(instr) == "(test bla $bla (bla) (bla))"
+
+
+def test_subinstruction_complex():
+    instr = SubInstruction("test")
+    instr.parameters.append("bla")
+    instr.parameters.append(Definition("bla"))
+    assert str(instr) == "test bla $bla"
+
+    tempinstr = Instruction("bla")
+    instr.parameters.append(tempinstr)
+    assert str(instr) == "test bla $bla (bla)"
+
+    instr.parameters.append(SubInstruction("bla"))
+    assert str(instr) == "test bla $bla (bla) bla"
 
 
 def test_wasm_module(compiler):
@@ -77,6 +91,12 @@ def test_wasm_functiondef_return_none(compiler):
             Instruction("param", Definition("b"), WASM_TYPES["integer"]),
         ),
     )
+
+
+def test_wasm_compiler_expr_inlining(compiler):
+    astconstantdef = ast.parse("1", "<test>", "eval").body  # body => Constant
+    resconstantdef = compiler.compile(astconstantdef)
+    assert resconstantdef == compiler.compile(ast.parse("1", "<test>", "eval"))
 
 
 @pytest.mark.parametrize(

@@ -89,8 +89,8 @@ class WASMCompiler(Compiler):
         constant.const(node.value)
         return constant
 
-    def visit_Expr(self, node: ast.Expr) -> Instruction:
-        return self.generic_visit(node)
+    def visit_Expression(self, node: ast.Expr) -> Instruction:
+        return self.visit(node.body)
 
     def visit_Name(self, node: ast.Name) -> Instruction:
         var = Definition(parse(node))
