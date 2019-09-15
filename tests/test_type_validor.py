@@ -41,3 +41,14 @@ def test_invalid_function_signature_return(checker):
 
     type_error = type_error.value
     assert type_error.msg.endswith("return signature.")
+
+
+@pytest.mark.parametrize("items", ([32, 0.3], [31.5, 10 ** 5]))
+@pytest.mark.parametrize("operator", "+-*/")
+def test_invalid_arithmetical(checker, items, operator):
+    lhs, rhs = items
+    with pytest.raises(NanoTypeError) as type_error:
+        checker.code_check(f"{lhs} {operator} {rhs}")
+
+    type_error = type_error.value
+    assert type_error.msg.endswith("arithmetical operations should have same type.")

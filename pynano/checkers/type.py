@@ -26,3 +26,13 @@ class TypeValidator(SyntaxChecker):
             raise NanoTypeError("Invalid type for argument.", node)
         if parse(node.returns) not in VALID_TYPES:
             raise NanoTypeError("Invalid type for return signature.", node)
+
+    def visit_BinOp(self, node: ast.BinOp) -> None:
+        if all(
+            isinstance(getattr(node, side), ast.Constant) for side in {"left", "right"}
+        ):
+            if type(node.left.value) is not type(node.right.value):
+                raise NanoTypeError(
+                    "Both left and right hand side of arithmetical operations should have same type.",
+                    node,
+                )
