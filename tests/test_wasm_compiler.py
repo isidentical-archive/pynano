@@ -179,3 +179,42 @@ def test_wasm_compiler_binop(compiler, cpack, operator):
         SubInstruction(f"{left_type}.const", right),
         SubInstruction(f"{left_type}.{OP_TYPES[operator]}"),
     ]
+
+
+def test_wasm_compiler_binop_local_local(compiler):
+    compiler._symbol_table.local[Definition("a")] = 1
+    compiler._symbol_table.local[Definition("b")] = 1
+    compiler._scope = Scopes.LOCAL
+    astconstantdef = ast.parse(f"a + b", "<test>", "eval").body
+    resconstantdef = compiler.compile(astconstantdef)
+    assert resconstantdef == [
+        SubInstruction(f"local.get", Definition("a")),
+        SubInstruction(f"local.get", Definition("b")),
+        SubInstruction(f"i32.add"),
+    ]
+
+
+def test_wasm_compiler_binop_local_module(compiler):
+    compiler._symbol_table.local[Definition("a")] = 1
+    compiler._symbol_table.module[Definition("b")] = 1
+    compiler._scope = Scopes.LOCAL
+    astconstantdef = ast.parse(f"a + b", "<test>", "eval").body
+    resconstantdef = compiler.compile(astconstantdef)
+    assert resconstantdef == [
+        SubInstruction(f"local.get", Definition("a")),
+        SubInstruction(f"global.get", Definition("b")),
+        SubInstruction(f"i32.add"),
+    ]
+
+
+def test_wasm_compiler_binop_module_module(compiler):
+    compiler._symbol_table.module[Definition("a")] = 1
+    compiler._symbol_table.module[Definition("b")] = 1
+    compiler._scope = Scopes.LOCAL
+    astconstantdef = ast.parse(f"a + b", "<test>", "eval").body
+    resconstantdef = compiler.compile(astconstantdef)
+    assert resconstantdef == [
+        SubInstruction(f"global.get", Definition("a")),
+        SubInstruction(f"global.get", Definition("b")),
+        SubInstruction(f"i32.add"),
+    ]

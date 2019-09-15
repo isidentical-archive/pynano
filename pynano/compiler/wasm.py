@@ -9,6 +9,7 @@ from pynano.interfaces import NanoSymbolError, Scopes, parse
 
 WASM_TYPES = {"integer": "i32", "float": "f32"}
 WASM_PY_TYPES = {int: "i32", float: "f32"}
+WASM_SCOPES = {"local": "local", "global": "module"}
 Parameter = Union[str, "Definition", "Instruction"]
 
 
@@ -111,14 +112,14 @@ class WASMCompiler(Compiler):
         """ (lhs > rhs) => (module = local > const)"""
         left = self.visit(node.left)
         right = self.visit(node.right)
-        if left.origin in {"local", "global"}:
-            op_type = self._symbol_table[left.parameters[0]]
-        elif right.origin in {"local", "global"}:
-            op_type = self._symbol_table[right.parameters[0]]
+        if (ori := left.origin) in {"local", "global"}:
+            op_type = getattr(self._symbol_table, WASM_SCOPES[ori])[left.parameters[0]]
+        elif (ori := right.origin) in {"local", "global"}:
+            op_type = getattr(self._symbol_table, WASM_SCOPES[ori])[right.parameters[0]]
         else:
-            op_type = left.origin
+            op_type = left.parameters[0]
 
-        op_type = SubInstruction(op_type)
+        op_type = SubInstruction(WASM_PY_TYPES[type(op_type)])
         getattr(op_type, type(node.op).__name__.lower()[:3])  # e.g i32.add
 
         return [left, right, op_type]
