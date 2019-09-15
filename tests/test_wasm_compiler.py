@@ -57,3 +57,16 @@ def test_wasm_functiondef(compiler, types):
             Instruction("result", WASM_TYPES[types[2]]),
         ),
     )
+
+
+def test_wasm_functiondef_return_none(compiler):
+    astfuncdef = ast.parse("def __test(a: integer, b: integer) -> None: pass")
+    resfuncdef = compiler.compile(astfuncdef)
+    assert resfuncdef == Instruction(
+        "module",
+        Instruction(
+            "func",
+            Instruction("param", Definition("a"), WASM_TYPES["integer"]),
+            Instruction("param", Definition("b"), WASM_TYPES["integer"]),
+        ),
+    )

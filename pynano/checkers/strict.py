@@ -23,7 +23,7 @@ class StrictSubsetChecker(SyntaxChecker):
     def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
         # ignore pos and kw only
         arguments = node.args
-        if not all(arg.annotation for arg in arguments.args):
+        if any(arg.annotation is None for arg in arguments.args):
             raise NotAllowedError("Arguments without annotations is not allowed.", node)
         if node.returns is None:
             raise NotAllowedError(

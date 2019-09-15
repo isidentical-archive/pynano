@@ -51,7 +51,6 @@ class WASMCompiler(Compiler):
             name = Definition(arg.arg)
             arg_type = WASM_TYPES[parse(arg.annotation)]
             function.parameters.append(Instruction("param", name, arg_type))
-        function.parameters.append(
-            Instruction("result", WASM_TYPES[parse(node.returns)])
-        )
+        if return_type := parse(node.returns):
+            function.parameters.append(Instruction("result", WASM_TYPES[return_type]))
         return function

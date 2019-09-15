@@ -14,3 +14,5 @@ class Precedence(IntEnum):
 def parse(node: Optional[ast.expr]) -> str:  # type: ignore
     if isinstance(node, ast.Name):
         return node.id
+    elif isinstance(node, ast.Constant) and node.value is None:
+        return None
