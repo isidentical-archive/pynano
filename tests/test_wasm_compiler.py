@@ -218,3 +218,15 @@ def test_wasm_compiler_binop_module_module(compiler):
         SubInstruction(f"global.get", Definition("b")),
         SubInstruction(f"i32.add"),
     ]
+
+
+def test_wasm_compiler_binop_local_const(compiler):
+    compiler._symbol_table.local[Definition("a")] = 1.0
+    compiler._scope = Scopes.LOCAL
+    astconstantdef = ast.parse(f"1 + a", "<test>", "eval").body
+    resconstantdef = compiler.compile(astconstantdef)
+    assert resconstantdef == [
+        SubInstruction(f"i32.const", 1),
+        SubInstruction(f"local.get", Definition("a")),
+        SubInstruction(f"f32.add"),
+    ]
