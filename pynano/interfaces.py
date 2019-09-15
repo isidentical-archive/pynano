@@ -38,6 +38,9 @@ class NamespaceDict(UserDict):
     def __getitem__(self, item: Any) -> Any:
         return super().__getitem__(str(item))
 
+    def __contains__(self, item: Any) -> bool:
+        return super().__contains__(str(item))
+
 
 @dataclass
 class Scope:

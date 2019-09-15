@@ -11,6 +11,7 @@ from pynano.compiler.wasm import (
     SubInstruction,
     WASMCompilationError,
 )
+from pynano.interfaces import NanoSymbolError, Scopes
 
 
 @pytest.fixture
@@ -118,6 +119,49 @@ def test_wasm_compiler_invalid_constant(compiler):
 
     compilation_error = compilation_error.value
     assert compilation_error.msg.startswith("Unknown type str")
+
+
+def test_wasm_compiler_module_name(compiler):
+    compiler._symbol_table.module[Definition("a")] = 1
+    astnamedef = ast.parse("a", "<test>", "eval").body
+    resnamedef = compiler.compile(astnamedef)
+    assert resnamedef == SubInstruction("global.get", Definition("a"))
+
+
+def test_wasm_compiler_local_name(compiler):
+    compiler._symbol_table.local[Definition("a")] = 1
+    compiler._scope = Scopes.LOCAL
+    astnamedef = ast.parse("a", "<test>", "eval").body
+    resnamedef = compiler.compile(astnamedef)
+    assert resnamedef == SubInstruction("local.get", Definition("a"))
+
+
+def test_wasm_compiler_name_precedence(compiler):
+    compiler._symbol_table.local[Definition("a")] = 1
+    compiler._symbol_table.module[Definition("a")] = 1
+    compiler._scope = Scopes.LOCAL
+    astnamedef = ast.parse("a", "<test>", "eval").body
+    resnamedef = compiler.compile(astnamedef)
+    assert resnamedef == SubInstruction("local.get", Definition("a"))
+
+
+def test_wasm_compiler_name_not_exist(compiler):
+    astnamedef = ast.parse("a", "<test>", "eval").body
+    with pytest.raises(NanoSymbolError) as symbol_error:
+        compiler.compile(astnamedef)
+
+    symbol_error = symbol_error.value
+    assert symbol_error.msg.startswith(f"Couldn't find {Definition('a')}")
+
+
+def test_wasm_compiler_module_scope_local_name(compiler):
+    compiler._symbol_table.local[Definition("a")] = 1
+    astnamedef = ast.parse("a", "<test>", "eval").body
+    with pytest.raises(NanoSymbolError) as symbol_error:
+        compiler.compile(astnamedef)
+
+    symbol_error = symbol_error.value
+    assert symbol_error.msg.startswith(f"Couldn't find {Definition('a')}")
 
 
 OP_TYPES = {"+": "add", "-": "sub", "*": "mul", "/": "div"}

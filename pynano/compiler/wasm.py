@@ -94,7 +94,7 @@ class WASMCompiler(Compiler):
 
     def visit_Name(self, node: ast.Name) -> Instruction:
         var = Definition(parse(node))
-        if var in self._symbol_table.local:
+        if var in self._symbol_table.local and self._scope is Scopes.LOCAL:
             local = SubInstruction("local")
             local.get(var)
             return local
