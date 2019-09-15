@@ -4,9 +4,11 @@ import pytest
 
 from pynano.compiler import WASMCompiler
 from pynano.compiler.wasm import (
+    WASM_PY_TYPES,
     WASM_TYPES,
     Definition,
     Instruction,
+    SubInstruction,
     WASMCompilationError,
 )
 
@@ -84,7 +86,9 @@ def test_wasm_compiler_valid_constant(compiler, cpack):
     constant_type, constant = cpack
     astconstantdef = ast.parse(str(constant), "<test>", "eval").body
     resconstantdef = compiler.compile(astconstantdef)
-    assert resconstantdef == Instruction(f"{WASM_TYPES[constant_type]}.const", constant)
+    assert resconstantdef == SubInstruction(
+        f"{WASM_TYPES[constant_type]}.const", constant
+    )
 
 
 def test_wasm_compiler_invalid_constant(compiler):
@@ -94,3 +98,20 @@ def test_wasm_compiler_invalid_constant(compiler):
 
     compilation_error = compilation_error.value
     assert compilation_error.msg.startswith("Unknown type str")
+
+
+OP_TYPES = {"+": "add", "-": "sub", "*": "mul", "/": "div"}
+
+
+@pytest.mark.parametrize("cpack", [(1, 2), (0.2, 0.5), (3.2, 3.7), (10 ** 4, 10 ** 5)])
+@pytest.mark.parametrize("operator", "+-*/")
+def test_wasm_compiler_binop(compiler, cpack, operator):
+    left, right = cpack
+    astconstantdef = ast.parse(f"{left} {operator} {right}", "<test>", "eval").body
+    resconstantdef = compiler.compile(astconstantdef)
+    left_type = WASM_PY_TYPES[type(left)]
+    assert resconstantdef == [
+        SubInstruction(f"{left_type}.const", left),
+        SubInstruction(f"{left_type}.const", right),
+        SubInstruction(f"{left_type}.{OP_TYPES[operator]}"),
+    ]
