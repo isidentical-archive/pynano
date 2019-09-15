@@ -3,18 +3,15 @@ from __future__ import annotations
 import ast
 from typing import Type, Union
 
-from pynano.interfaces import Precedence
+from pynano.interfaces import NanoError, Precedence
 
 ACTIVE_SIGN = "ACTIVE"
 PRECEDENCE_SIGN = "PRECEDENCE"
 CHECKERS = []
 
 
-class NanoSyntaxError(SyntaxError):
-    # https://github.com/python/cpython/blob/5b9ff7a0dcb16d6f5c3cd4f1f52e0ca6a4bde586/Objects/exceptions.c#L1355
-
-    def __init__(self, msg: str, node: ast.AST) -> None:
-        super().__init__(msg, (None, node.lineno, node.col_offset, None))
+class NanoSyntaxError(NanoError):
+    pass
 
 
 class SyntaxChecker(ast.NodeVisitor):

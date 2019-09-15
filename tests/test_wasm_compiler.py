@@ -70,3 +70,13 @@ def test_wasm_functiondef_return_none(compiler):
             Instruction("param", Definition("b"), WASM_TYPES["integer"]),
         ),
     )
+
+
+@pytest.mark.parametrize(
+    "cpack", [("integer", 13), ("float", 0.5), ("float", 1.2), ("integer", 10 ** 5)]
+)
+def test_wasm_compiler_valid_constant(compiler, cpack):
+    constant_type, constant = cpack
+    astconstantdef = ast.parse(str(constant), "<test>", "eval").body
+    resconstantdef = compiler.compile(astconstantdef)
+    assert resconstantdef == Instruction(f"{WASM_TYPES[constant_type]}.const", constant)

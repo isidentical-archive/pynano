@@ -4,11 +4,15 @@ import ast
 from dataclasses import dataclass, field
 from typing import List, Union
 
-from pynano.compiler import Compiler
+from pynano.compiler import CompilationError, Compiler
 from pynano.interfaces import parse
 
 WASM_TYPES = {"integer": "i32", "float": "f32"}
 Parameter = Union[str, "Definition", "Instruction"]
+
+
+class WASMCompilationError(CompilationError):
+    pass
 
 
 @dataclass
@@ -35,6 +39,10 @@ class Instruction:
         base += ")"
         return base
 
+    def __getattr__(self, attr: str) -> Callable[[Parameter], None]:
+        self.name = f"{self.name}.{attr}"
+        return self.parameters.append
+
 
 class WASMCompiler(Compiler):
     def visit_Module(self, node: ast.Module) -> Instruction:
@@ -54,3 +62,18 @@ class WASMCompiler(Compiler):
         if return_type := parse(node.returns):
             function.parameters.append(Instruction("result", WASM_TYPES[return_type]))
         return function
+
+    def visit_Constant(self, node: ast.Constant) -> Instruction:
+        constant_type = type(node.value)
+        if constant_type is int:
+            constant_type = WASM_TYPES["integer"]
+        elif constant_type is float:
+            constant_type = WASM_TYPES["float"]
+        else:
+            raise WASMCompilationError(
+                f"Unknown type {constant_type} at constant definition.", node
+            )
+
+        constant = Instruction(constant_type)
+        constant.const(node.value)
+        return constant

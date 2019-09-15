@@ -1,5 +1,7 @@
 import ast
 
+from pynano.interfaces import NanoError
+
 
 class Compiler(ast.NodeTransformer):
     def compile(self, tree: ast.AST) -> str:
@@ -7,5 +9,5 @@ class Compiler(ast.NodeTransformer):
         return code
 
 
-class CompilationError(Exception):
+class CompilationError(NanoError):
     pass

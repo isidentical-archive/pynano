@@ -11,6 +11,13 @@ class Precedence(IntEnum):
     FINAL = 4
 
 
+class NanoError(SyntaxError):
+    # https://github.com/python/cpython/blob/5b9ff7a0dcb16d6f5c3cd4f1f52e0ca6a4bde586/Objects/exceptions.c#L1355
+
+    def __init__(self, msg: str, node: ast.AST) -> None:
+        super().__init__(msg, (None, node.lineno, node.col_offset, None))
+
+
 def parse(node: Optional[ast.expr]) -> str:  # type: ignore
     if isinstance(node, ast.Name):
         return node.id
