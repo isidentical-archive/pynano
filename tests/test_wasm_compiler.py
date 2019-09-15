@@ -3,7 +3,12 @@ import ast
 import pytest
 
 from pynano.compiler import WASMCompiler
-from pynano.compiler.wasm import WASM_TYPES, Definition, Instruction
+from pynano.compiler.wasm import (
+    WASM_TYPES,
+    Definition,
+    Instruction,
+    WASMCompilationError,
+)
 
 
 @pytest.fixture
@@ -80,3 +85,12 @@ def test_wasm_compiler_valid_constant(compiler, cpack):
     astconstantdef = ast.parse(str(constant), "<test>", "eval").body
     resconstantdef = compiler.compile(astconstantdef)
     assert resconstantdef == Instruction(f"{WASM_TYPES[constant_type]}.const", constant)
+
+
+def test_wasm_compiler_invalid_constant(compiler):
+    astconstantdef = ast.parse("'pynano'", "<test>", "eval").body
+    with pytest.raises(WASMCompilationError) as compilation_error:
+        compiler.compile(astconstantdef)
+
+    compilation_error = compilation_error.value
+    assert compilation_error.msg.startswith("Unknown type str")

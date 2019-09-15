@@ -71,7 +71,7 @@ class WASMCompiler(Compiler):
             constant_type = WASM_TYPES["float"]
         else:
             raise WASMCompilationError(
-                f"Unknown type {constant_type} at constant definition.", node
+                f"Unknown type {constant_type.__name__} at constant definition.", node
             )
 
         constant = Instruction(constant_type)
