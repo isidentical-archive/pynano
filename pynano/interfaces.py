@@ -8,7 +8,7 @@ Namespace = Mapping[str, str]
 
 
 class Precedence(IntEnum):
-    INITAL = 0
+    INITIAL = 0
     LOW = 1
     AVG = 2
     HAVG = 3

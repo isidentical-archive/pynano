@@ -12,7 +12,10 @@ def checker():
 def test_valid_type(checker, valid_type):
     assert checker.code_check(f"a: {valid_type} = bla_bla") is True
     assert (
-        checker.code_check(f"def __test(a: {valid_type}) -> {valid_type}: pass") is True
+        checker.code_check(
+            f"def __test(a: {valid_type}) -> {valid_type}: pass"
+        )
+        is True
     )
 
 
@@ -24,7 +27,9 @@ def test_invalid_assignment(checker):
     assert type_error.msg.endswith("assignment target.")
 
 
-@pytest.mark.parametrize("signature", (["integer", "bla_bla"], ["bla_bla", "float"]))
+@pytest.mark.parametrize(
+    "signature", (["integer", "bla_bla"], ["bla_bla", "float"])
+)
 def test_invalid_function_signature_arguments(checker, signature):
     with pytest.raises(NanoTypeError) as type_error:
         checker.code_check(
@@ -51,4 +56,6 @@ def test_invalid_arithmetical(checker, items, operator):
         checker.code_check(f"{lhs} {operator} {rhs}")
 
     type_error = type_error.value
-    assert type_error.msg.endswith("arithmetical operations should have same type.")
+    assert type_error.msg.endswith(
+        "arithmetical operations should have same type."
+    )

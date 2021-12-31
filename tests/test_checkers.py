@@ -50,7 +50,7 @@ def test_checker_subclass_precedence():
 
     class FakeCheckerInital(SyntaxChecker):
         ACTIVE = True
-        PRECEDENCE = Precedence.INITAL
+        PRECEDENCE = Precedence.INITIAL
 
     assert CHECKERS == [FakeCheckerInital, FakeCheckerFinal]
 

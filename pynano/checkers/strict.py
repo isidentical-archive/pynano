@@ -10,10 +10,10 @@ class NotAllowedError(NanoSyntaxError):
 
 
 class StrictSubsetChecker(SyntaxChecker):
-    """Checks for if tree complies with pynano subset """
+    """Checks for if tree complies with pynano subset"""
 
     ACTIVE = True
-    PRECEDENCE = Precedence.INITAL
+    PRECEDENCE = Precedence.INITIAL
 
     def visit_Assign(self, node: ast.Assign) -> NoReturn:
         raise NotAllowedError(
@@ -24,7 +24,9 @@ class StrictSubsetChecker(SyntaxChecker):
         # ignore pos and kw only
         arguments = node.args
         if any(arg.annotation is None for arg in arguments.args):
-            raise NotAllowedError("Arguments without annotations is not allowed.", node)
+            raise NotAllowedError(
+                "Arguments without annotations is not allowed.", node
+            )
         if node.returns is None:
             raise NotAllowedError(
                 "Function definition without return type is not allowed.", node

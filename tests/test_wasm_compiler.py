@@ -68,7 +68,9 @@ def test_wasm_module(compiler):
     "types", (["integer", "integer", "integer"], ["float", "integer", "float"])
 )
 def test_wasm_functiondef(compiler, types):
-    astfuncdef = ast.parse("def __test(a: {}, b: {}) -> {}: pass".format(*types))
+    astfuncdef = ast.parse(
+        "def __test(a: {}, b: {}) -> {}: pass".format(*types)
+    )
     resfuncdef = compiler.compile(astfuncdef)
     assert resfuncdef == Instruction(
         "module",
@@ -101,7 +103,8 @@ def test_wasm_compiler_expr_inlining(compiler):
 
 
 @pytest.mark.parametrize(
-    "cpack", [("integer", 13), ("float", 0.5), ("float", 1.2), ("integer", 10 ** 5)]
+    "cpack",
+    [("integer", 13), ("float", 0.5), ("float", 1.2), ("integer", 10 ** 5)],
 )
 def test_wasm_compiler_valid_constant(compiler, cpack):
     constant_type, constant = cpack
@@ -167,11 +170,15 @@ def test_wasm_compiler_module_scope_local_name(compiler):
 OP_TYPES = {"+": "add", "-": "sub", "*": "mul", "/": "div"}
 
 
-@pytest.mark.parametrize("cpack", [(1, 2), (0.2, 0.5), (3.2, 3.7), (10 ** 4, 10 ** 5)])
+@pytest.mark.parametrize(
+    "cpack", [(1, 2), (0.2, 0.5), (3.2, 3.7), (10 ** 4, 10 ** 5)]
+)
 @pytest.mark.parametrize("operator", "+-*/")
 def test_wasm_compiler_binop(compiler, cpack, operator):
     left, right = cpack
-    astconstantdef = ast.parse(f"{left} {operator} {right}", "<test>", "eval").body
+    astconstantdef = ast.parse(
+        f"{left} {operator} {right}", "<test>", "eval"
+    ).body
     resconstantdef = compiler.compile(astconstantdef)
     left_type = WASM_PY_TYPES[type(left)]
     assert resconstantdef == [

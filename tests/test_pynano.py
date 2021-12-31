@@ -23,7 +23,10 @@ def test_pynano_differnet_checkers():
 
 @pytest.mark.parametrize(
     "program",
-    (BASE_PATH / "examples" / "empty.pyn", BASE_PATH / "examples" / "demo_func.pyn"),
+    (
+        BASE_PATH / "examples" / "empty.pyn",
+        BASE_PATH / "examples" / "demo_func.pyn",
+    ),
 )
 def test_pynano_example(pynano, program):
     result = pynano.compile(program)

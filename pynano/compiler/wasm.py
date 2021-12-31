@@ -75,7 +75,9 @@ class WASMCompiler(Compiler):
             self._symbol_table.local[name] = arg_type
             function.parameters.append(Instruction("param", name, arg_type))
         if return_type := parse(node.returns):
-            function.parameters.append(Instruction("result", WASM_TYPES[return_type]))
+            function.parameters.append(
+                Instruction("result", WASM_TYPES[return_type])
+            )
         return function
 
     def visit_Constant(self, node: ast.Constant) -> Instruction:
@@ -109,13 +111,17 @@ class WASMCompiler(Compiler):
             )
 
     def visit_BinOp(self, node: ast.BinOp) -> Instruction:
-        """ (lhs > rhs) => (module = local > const)"""
+        """(lhs > rhs) => (module = local > const)"""
         left = self.visit(node.left)
         right = self.visit(node.right)
         if (ori := left.origin) in {"local", "global"}:
-            op_type = getattr(self._symbol_table, WASM_SCOPES[ori])[left.parameters[0]]
+            op_type = getattr(self._symbol_table, WASM_SCOPES[ori])[
+                left.parameters[0]
+            ]
         elif (ori := right.origin) in {"local", "global"}:
-            op_type = getattr(self._symbol_table, WASM_SCOPES[ori])[right.parameters[0]]
+            op_type = getattr(self._symbol_table, WASM_SCOPES[ori])[
+                right.parameters[0]
+            ]
         else:
             op_type = left.parameters[0]
 

@@ -18,7 +18,9 @@ def main(file: Path, backend: Optional[Compiler] = None) -> None:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="PyNano")
     parser.add_argument("file", type=Path, help="pynano file to run")
-    parser.add_argument("backend", default=None, nargs="?", help="compilation target")
+    parser.add_argument(
+        "backend", default=None, nargs="?", help="compilation target"
+    )
     return parser.parse_args()
 
 

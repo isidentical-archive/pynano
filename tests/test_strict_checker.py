@@ -20,7 +20,9 @@ def test_assignment(checker):
 
 
 def test_valid_function_signature(checker):
-    assert checker.code_check("def __test(a: int, b: int) -> str: pass") is True
+    assert (
+        checker.code_check("def __test(a: int, b: int) -> str: pass") is True
+    )
 
 
 @pytest.mark.parametrize(
@@ -28,7 +30,9 @@ def test_valid_function_signature(checker):
 )
 def test_invalid_function_signature_arguments(checker, signature):
     with pytest.raises(NotAllowedError) as not_allowed_error:
-        checker.code_check("def __test({}) -> int: pass".format(", ".join(signature)))
+        checker.code_check(
+            "def __test({}) -> int: pass".format(", ".join(signature))
+        )
 
     not_allowed_error = not_allowed_error.value
     assert not_allowed_error.msg.startswith("Arguments without")
@@ -39,4 +43,6 @@ def test_invalid_function_signature_return(checker):
         checker.code_check("def __test(a: int): pass")
 
     not_allowed_error = not_allowed_error.value
-    assert not_allowed_error.msg.startswith("Function definition without return type")
+    assert not_allowed_error.msg.startswith(
+        "Function definition without return type"
+    )
