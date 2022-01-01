@@ -5,15 +5,11 @@ repos:
     rev: 21.12b0
     hooks:
     -   id: black
-        args: [-l 79]
--   repo: https://github.com/asottile/seed-isort-config
-    rev: v2.2.0
-    hooks:
-    -   id: seed-isort-config
 -   repo: https://github.com/pre-commit/mirrors-isort
     rev: v5.9.3
     hooks:
     -   id: isort
+        additional_dependencies: [toml]
 -   repo: https://github.com/codespell-project/codespell
     rev: v2.1.0
     hooks:
